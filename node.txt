@@ -1,0 +1,40 @@
+
+1. render các màn hình giao diện
+1.1. tạo app sử dụng express ejs
+1.2. sử dụng nodemon debug
+1.3. sử dụng routers phân nhánh path
+1.4. sử dụng dotenv cho chuyên nghiệp
+1.5. tạo các middleware cho các đường dẫn ( login_check; valid_input_check; )  V
+
+2. socket
+2.1. tạo socket đơn giản
+2.2. kết nối socket giữa các người dùng
+
+3. kết nối csdl mongoose
+3.1. tạo các schema cho user, message
+3.2. tạo các function trigger và các function input
+3.3. sử dụng bcrypt mã hóa mật khẩu
+
+4. đăng nhập bằng local
+4.1. thiết lập session
+4.2. thiết lập stratery local sử dụng passport
+
+5. đăng nhập bằng các phương thức khác
+5.1. đăng nhập bằng facebook
+5.2. đăng nhập bằng google
+
+module = express, ejs, socket.io, body-parser, dotenv, nodemon --save-dev, express-session, express-flash, express-validator, mongoose, passport, passport-facebook
+
+
+
+- thêm thời gian cho tin nhắn
+- lưu thông tin tin nhắn
+- hiển thị trạng thái online / offline
+- hiển thị các tin nhắn trong quá khứ
+- scoll đến vị trí tin mới nhất
+- cho phép lưu file upload
+- cho phép upload hình ảnh
+- cho phép hiển thị hình ảnh trực tiếp trên mess
+- cho phép gửi tệp
+- cho phép tải têp về
+- cho phép đăng nhập bằng phương thức khác

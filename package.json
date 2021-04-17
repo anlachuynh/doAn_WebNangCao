@@ -1,0 +1,11 @@
+{
+  "name": "doan",
+  "version": "1.0.0",
+  "description": "Đồ án cuối kỳ môn Web nâng cao",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "author": "Minh Toan",
+  "license": "ISC"
+}
