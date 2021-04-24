@@ -17,7 +17,6 @@ const configSocket = (app) => {
             io.emit('updateStatus', usersOnline)
             console.log(`người dùng: ${userID} online`)
         })
-
         // nhan tin nhan duoc gui di
         socket.on('sendMess', function({mess, otherID}){
 

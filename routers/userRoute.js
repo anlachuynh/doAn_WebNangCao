@@ -3,7 +3,7 @@ const controller = require('../controllers/userController')
 
 router.get('/login', controller.isLogin, controller.index)
 
-router.post('/login', controller.flashData, controller.validator_login, controller.valid_login, controller.authenticate, controller.login)
+router.post('/login', controller.flashData, controller.validator_login, controller.valid_login, controller.local_authenticate, controller.login)
 
 router.get('/logout', controller.logout)
 

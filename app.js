@@ -38,9 +38,12 @@ const isLogin = (req, res, next) => {
     else return res.redirect('./user/login')
 }
 
+// Dashboard
 app.get('/', isLogin, (req, res) => {
     res.redirect('/chat')
 })
+
+app.use('/auth', require('./routers/OAuth'))
 
 app.use('/chat', require('./routers/chatRoute'))
 

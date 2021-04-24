@@ -23,7 +23,29 @@ passport.use('local', new localStratery({
         return done(null, false, err)
     })
 }))
-    
+
+const keys = require('./.git/key')
+const GoogleStrategy = require('passport-google-oauth20').Strategy
+passport.use('google', new GoogleStrategy({
+    clientID: keys.googleClientID,
+    clientSecret: keys.googleClientSecret,
+    callbackURL: '/auth/google/callback'
+},(accessToken, refreshToken, profile, done) => {
+    if(!profile.id) return done(null, false, {message: 'Không truy cập được id người dùng!'})
+    else{
+        userModel.findOne({authID: `${profile.provider}:${profile.id}`}).exec()
+        .then(u => {
+            if (u == null){
+                let newUserAuth = new userModel({authID: `${profile.provider}:${profile.id}`, name: `${profile.name.familyName} ${profile.name.givenName}`, nickName: profile.displayName, email: profile.emails[0].value, avatar: profile.photos[0].value})
+                newUserAuth.save((err, doc, n) => {
+                    if(err) return done(null, false, {message: err})
+                    else return done(null, doc)
+                })
+            }
+            else return done(null, u)
+        })
+    }
+}))
 
 // done(err) will be handled by Express and generate an HTTP 500 response
 // done(null, false) call failureRedirect

@@ -87,7 +87,7 @@ module.exports = {
                 return true
         }),
     ],
-    authenticate: passport.authenticate('local', {
+    local_authenticate: passport.authenticate('local', {
         failureRedirect: '/user/login',
         successRedirect: '/',
         failureFlash: true,
@@ -119,4 +119,5 @@ module.exports = {
         }
         else next()
     },
+    
 }

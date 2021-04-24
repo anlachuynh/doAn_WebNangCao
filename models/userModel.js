@@ -1,15 +1,21 @@
 const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 const userSchema = mongoose.Schema({
-    authId: {type: String, default: ''},
+    authID: {type: String, default: ''},
     name: {type: String, default: 'anonymous'},
     nickName: {type: String, default: ''},
     email: {type: String, required: true, unique: true},
     password: {type: String, default: ''},
-    avatar: {type: String, default: '/images/default.png'}
+    avatar: {type: String, default: '/images/default.png'},
+    role: {type: String, default: 'student'},
+    category: {type: Array, default: []}
 })
 
 userSchema.path('name').set(function (value) {
+    return value.replace(/^\w|\s\w/gi, match => match.toUpperCase())
+})
+
+userSchema.path('role').set(function (value) {
     return value.replace(/^\w|\s\w/gi, match => match.toUpperCase())
 })
 
