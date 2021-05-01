@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+    <title>Trang chủ</title>
+</head>
+
+<body>
+    <!-- Menu ben trai -->
+    <div class="nav-side-menu">
+        <div class="brand">Sakai Plus</div>
+        <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+
+        <div class="menu-list">
+            <ul id="menu-content" class="menu-content collapse out">
+                <li>
+                    <a href="#">
+                        <i class="fa fa-dashboard fa-lg"></i> Trang chủ
+                    </a>
+                </li>
+                <li data-toggle="collapse" data-target="#products" class="collapsed active">
+                    <a href="#"><i class="fa fa-gift fa-lg"></i> Phân loại thông báo <span class="arrow"></span></a>
+                </li>
+                <ul class="sub-menu collapse" id="products">
+                    <li><a href="#">Phòng ban</a></li>
+                    <li><a href="#">Chủ đề</a></li>
+                    <li><a href="#">Tất cả thông báo</a></li>
+                </ul>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-users fa-lg"></i> Cổng thông tin
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-md-6 gedf-main">
+        <!-- Khu vuc dang bai -->
+        <div class="card gedf-card">
+            <div class="card-body">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
+                        <div class="form-group">
+                            <textarea class="form-control" id="message" rows="3" placeholder="Nhập để đăng gì đó"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <form action="/action_page.php" class="btns-post">
+                    <div class="btn-toolbar justify-content-between">
+                        <div class="btn-group">
+                            <button id="btnGroupDrop1" type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-globe"></i></button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
+                                <a class="dropdown-item" href="#"><i class="fa fa-globe"></i> CTHSSV</a>
+                                <a class="dropdown-item" href="#"><i class="fa fa-users"></i> Phòng Đại học</a>
+                                <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Trung tâm tin học</a>
+                                <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Khoa Tài chính ngân hàng</a>
+                            </div>
+                        </div>
+
+                        <div class="btn-group btn-group-2">
+                            <i type="button" data-toggle="modal" data-target="#exampleModal">
+                                <i class="material-icons">&#xe410;</i>
+                            </i>
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="file-loading">
+                                                <input id="input-b9" name="input-b9[]" multiple type="file">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-share-post">share</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- Post -->
+        <div class="card gedf-card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="mr-2">
+                            <img class="rounded-circle" width="45" src="https://picsum.photos/50/50" alt="">
+                        </div>
+                        <div class="ml-2">
+                            <div class="h7 text-muted">Đặng Minh Thắng</div>
+                        </div>
+                    </div>
+                    <!-- Tuy chon cho mo post -->
+                    <div>
+                        <div class="dropdown">
+                            <button class="btn btn-link dropdown-toggle" type="button" id="gedf-drop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="gedf-drop1">
+                                <a class="dropdown-item" href="#edit">Chỉnh sửa</a>
+                                <a class="dropdown-item" href="#delete">Xoá</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="text-muted h7 mb-2"> <i class="fa fa-clock-o"></i>10 min ago</div>
+                <a class="card-link" href="#">
+                    <h5 class="card-title">Thong Bao</h5>
+                </a>
+
+                <p class="card-text">
+                    Hôm nay giỗ tổ nhưng đéo được nghỉ
+                </p>
+            </div>
+            <div class="card-footer">
+                <a href="#" class="card-link"><i class="fa fa-comment"></i> Comment</a>
+            </div>
+        </div>
+
+    </div>
+    <!-- Thong bao ben phai -->
+    <div class="col-md-3 thongbao-manhinhchinh">
+        <div class="card gedf-card">
+            <div class="card-body card-thongbao-chinh">
+                <h5 class="card-title card-title-thongbao">Thông báo</h5>
+                <a href="#" class="card-link link-xem-toanbo-thongbao"><u>Xem tất cả thông báo</u></a>
+            </div>
+        </div>
+        <div class="card gedf-card">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">[Phòng đại học]</h6>
+                <h6 class="card-subtitle mb-2 text-muted card-subtitle-date">03/02/2021</h6>
+                <hr/>
+                <h5 class="card-title">Đăng kí môn học hè</h5>
+                <p class="card-text">Mở ngẫu nhiên đăng kí</p>
+                <a href="#" class="card-link">Xem thông báo</a>
+            </div>
+        </div>
+        <div class="card gedf-card">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">[Phòng tài chính]</h6>
+                <h6 class="card-subtitle mb-2 text-muted card-subtitle-date">20/04/2021</h6>
+                <hr/>
+                <h5 class="card-title">Đăng kí môn học hè</h5>
+                <p class="card-text">Mở ngẫu nhiên đăng kí</p>
+                <a href="#" class="card-link">Xem thông báo</a>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="main.js"></script>
+
+</html>

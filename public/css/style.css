@@ -1,358 +1,308 @@
-.container {
-    padding: 5%;
-    height: 20%;
-    width: 40%;
-    margin-top: 3%;
-    border: 2px solid #EFF3F7;
-    border-radius: 5%;
-    background-color: #EFF3F7;
-}
-
-.alert {
-    margin-top: 10%;
-    margin: 2%;
-}
-
-.caption-login .caption-login-main {
-    font-size: 44px;
-}
-
-.caption-login {
-    text-align: center;
-    font-family: 'Arbutus';
-    font-size: 22px;
-}
-
-.btn-dangnhap {
-    width: 100%;
-    float: right;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    background-color: #abd9e9;
-    font-family: Arial;
-}
-
-#container {
-    width: 70%;
-    height: 60%;
-    background: #eff3f7;
-    margin-left: 15%;
-    margin-top: 1%;
-    /* margin: 0 auto; */
-    font-size: 0;
-    border-radius: 2%;
-    overflow: hidden;
-}
-
-aside {
-    width: 30%;
-    height: 800px;
-    background-color: #3b3e49;
-    display: inline-block;
-    font-size: 15px;
-    vertical-align: top;
-}
-
-.btn-sent {
-    float: right;
-}
-
-main {
-    width: 70%;
-    height: 800px;
-    display: inline-block;
-    font-size: 15px;
-    vertical-align: top;
-}
-
-aside header {
-    padding: 30px 20px;
-}
-
-aside input {
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-    padding: 0 50px 0 20px;
-    background-color: #5e616a;
-    border: none;
-    border-radius: 3px;
-    color: #fff;
-    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/ico_search.png);
-    background-repeat: no-repeat;
-    background-position: 170px;
-    background-size: 40px;
-}
-
-aside input::placeholder {
-    color: #fff;
-}
-
-aside ul {
-    padding-left: 0;
-    margin: 0;
-    list-style-type: none;
-    overflow-x: hidden;
-    overflow-y: auto;
-    height: 690px;
-}
-
-aside li {
-    padding: 10px 0;
-}
-
-aside li:hover {
-    background-color: #5e616a;
-}
-
-h2,
-h3 {
-    margin: 0;
-}
-
-aside li img {
-    padding-top: 2%;
-    border-radius: 50%;
-    margin-left: 20px;
-    margin-right: 8px;
-    width: 15%;
-    height: 15%;
-}
-
-aside li div {
-    display: inline-block;
-    vertical-align: top;
-    margin-top: 12px;
-}
-
-aside li h2 {
-    font-size: 14px;
-    color: #fff;
-    font-weight: normal;
-    margin-bottom: 5px;
-}
-
-aside li h3 {
-    font-size: 12px;
-    color: #7e818a;
-    font-weight: normal;
-}
-
-.status {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 7px;
-}
-
-.green {
-    background-color: #58b666;
-}
-
-.orange {
-    background-color: #ff725d;
-}
-
-.blue {
-    background-color: #6fbced;
-    margin-right: 0;
-    margin-left: 7px;
-}
-
-main header {
-    height: 110px;
-    padding: 30px 20px 30px 40px;
-}
-
-main header>* {
-    display: inline-block;
-    vertical-align: top;
-}
-
-main header img:first-child {
-    border-radius: 50%;
-    height: 40px;
-    width: 40px;
-}
-
-main header img:last-child {
-    width: 24px;
-    margin-top: 8px;
-}
-
-main header div {
-    margin-left: 10px;
-    margin-right: 145px;
-}
-
-main header h2 {
-    font-size: 16px;
-    margin-bottom: 5px;
-}
-
-main header h3 {
-    font-size: 14px;
-    font-weight: normal;
-    color: #7e818a;
-}
-
-.namechatting {
-    text-align: center;
-    font-size: 30px;
-}
-
-.form-control .chonhap {
-    background-color: #7e818a;
-}
-
-#chat {
-    padding-left: 0;
-    margin: 0;
-    list-style-type: none;
-    overflow-x: hidden;
-    overflow-y: auto;
-    height: 535px;
-    border-top: 2px solid #fff;
-    border-bottom: 2px solid #fff;
-}
-
-#chat li {
-    padding: 10px 30px;
-}
-
-#chat h2,
-#chat h3 {
-    display: inline-block;
-    font-size: 13px;
-    font-weight: normal;
-}
-
-#chat h3 {
-    color: #bbb;
-}
-
-#chat .entete {
-    margin-bottom: 5px;
-}
-
-#chat .message {
-    padding: 20px;
-    color: #fff;
-    line-height: 25px;
-    max-width: 90%;
-    display: inline-block;
-    text-align: left;
-    border-radius: 5px;
-}
-
-#chat .me {
-    text-align: right;
-}
-
-#chat .you .message {
-    background-color: #58b666;
-}
-
-#chat .me .message {
-    background-color: #6fbced;
-}
-
-#chat .triangle {
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 10px 10px 10px;
-}
-
-#chat .you .triangle {
-    border-color: transparent transparent #58b666 transparent;
-    margin-left: 15px;
-}
-
-#chat .me .triangle {
-    border-color: transparent transparent #6fbced transparent;
-    margin-left: 375px;
-}
-
-main footer {
-    height: 155px;
-    padding: 20px 30px 10px 20px;
-}
-
-main footer textarea {
-    resize: none;
-    border: none;
-    display: block;
-    width: 100%;
-    height: 80px;
-    border-radius: 3px;
-    padding: 20px;
-    font-size: 13px;
-    margin-bottom: 13px;
-}
-
-main footer textarea::placeholder {
-    color: #ddd;
-}
-
-main footer img {
-    height: 30px;
-    cursor: pointer;
-}
-
-main footer a {
-    text-decoration: none;
-    text-transform: uppercase;
-    font-weight: bold;
-    color: #6fbced;
-    vertical-align: top;
-    display: inline-block;
-}
-
-.button {
-    float: right;
-    width: 50px;
-    border-radius: 20%;
-    background-color: #4CAF50;
-    /* Green */
-    border: none;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    transition-duration: 0.4s;
-    cursor: pointer;
-}
-
-.button2 {
-    background-color: white;
-    color: black;
-    border: 2px solid #008CBA;
-}
-
-.button2:hover {
-    background-color: #008CBA;
-    color: white;
-}
-
-.button .button2 {
-    font-size: 30px;
-}
-
-.ten-ben-aside {
-    width: 80%;
-}
-
-.signin {
-    margin-top: 20%;
-    width: 100%;
-    background-color: #f1f1f1;
-    text-align: center;
-}
+    .container {
+        border: 2px solid #EFF3F7;
+        background-color: #EFF3F7;
+    }
+    
+    .alert {
+        margin-top: 10%;
+        margin: 2%;
+    }
+    
+    .caption-login-main {
+        text-align: center;
+    }
+    
+    .signin {
+        text-align: center;
+        margin: 0%;
+    }
+    
+    .btn-dangnhap {
+        float: right;
+    }
+    
+    .btn-dangki {
+        float: right;
+    }
+    
+    .nav-side-menu {
+        overflow: auto;
+        font-family: verdana;
+        font-size: 12px;
+        font-weight: 200;
+        background-color: #333b45;
+        position: fixed;
+        top: 0px;
+        width: 300px;
+        height: 100%;
+        color: #e1ffff;
+    }
+    
+    .nav-side-menu .brand {
+        background-color: #23282e;
+        line-height: 50px;
+        display: block;
+        text-align: center;
+        font-size: 14px;
+    }
+    
+    .nav-side-menu .toggle-btn {
+        display: none;
+    }
+    
+    .nav-side-menu ul,
+    .nav-side-menu li {
+        list-style: none;
+        padding: 0px;
+        margin: 0px;
+        line-height: 35px;
+        cursor: pointer;
+    }
+    
+    .nav-side-menu ul :not(collapsed) .arrow:before,
+    .nav-side-menu li :not(collapsed) .arrow:before {
+        font-family: FontAwesome;
+        content: "\f078";
+        display: inline-block;
+        padding-left: 10px;
+        padding-right: 10px;
+        vertical-align: middle;
+    }
+    
+    .nav-side-menu ul .active,
+    .nav-side-menu li .active {
+        border-left: 3px solid #d19b3d;
+        background-color: #4f5357;
+    }
+    
+    .nav-side-menu ul .sub-menu li.active,
+    .nav-side-menu li .sub-menu li.active {
+        color: #d19b3d;
+    }
+    
+    .nav-side-menu ul .sub-menu li.active a,
+    .nav-side-menu li .sub-menu li.active a {
+        color: #d19b3d;
+    }
+    
+    .nav-side-menu ul .sub-menu li,
+    .nav-side-menu li .sub-menu li {
+        background-color: #181c20;
+        border: none;
+        line-height: 28px;
+        border-bottom: 1px solid #23282e;
+        margin-left: 0px;
+    }
+    
+    .nav-side-menu ul .sub-menu li:hover,
+    .nav-side-menu li .sub-menu li:hover {
+        background-color: #020203;
+    }
+    
+    .nav-side-menu ul .sub-menu li:before,
+    .nav-side-menu li .sub-menu li:before {
+        font-family: FontAwesome;
+        content: "\f105";
+        display: inline-block;
+        padding-left: 10px;
+        padding-right: 10px;
+        vertical-align: middle;
+    }
+    
+    .nav-side-menu li {
+        padding-left: 0px;
+        border-left: 3px solid #2e353d;
+        border-bottom: 1px solid #23282e;
+    }
+    
+    .nav-side-menu li a {
+        text-decoration: none;
+        color: #e1ffff;
+    }
+    
+    .nav-side-menu li a i {
+        padding-left: 10px;
+        width: 20px;
+        padding-right: 20px;
+    }
+    
+    .nav-side-menu li:hover {
+        border-left: 3px solid #d19b3d;
+        background-color: #4f5b69;
+        -webkit-transition: all 1s ease;
+        -moz-transition: all 1s ease;
+        -o-transition: all 1s ease;
+        -ms-transition: all 1s ease;
+        transition: all 1s ease;
+    }
+    
+    .btn-share-post {
+        width: 60%;
+        float: right;
+        padding: 0%;
+        margin: 0%;
+        margin-left: 5%;
+        height: 30px;
+    }
+    
+    .btn-upload-images-main {
+        position: relative;
+        overflow: hidden;
+        float: right;
+    }
+    
+    .input-upload-images-main {
+        position: absolute;
+        font-size: 50px;
+        opacity: 0;
+        right: 0;
+        top: 0;
+    }
+    
+    .btns-post {
+        height: 30%;
+    }
+    
+    .card-subtitle-date {
+        float: right;
+        font-size: 12px;
+    }
+    
+    .card-title-thongbao {
+        text-align: center;
+    }
+    
+    .link-xem-toanbo-thongbao {
+        font-size: 12px;
+        float: right;
+    }
+    
+    .card-thongbao-chinh {
+        padding: 3%;
+        padding-top: 6%;
+        margin: 0%;
+    }
+    
+    .card-body {
+        padding-bottom: 2%;
+    }
+    
+    .btn-group-2 {
+        float: left;
+    }
+    
+    .carousel-inner .item img {
+        width: 800px;
+        height: 300px;
+        border-radius: 4px;
+    }
+    
+    .cell {
+        margin-top: 20px;
+        padding-bottom: 15px;
+        border-radius: 4px;
+    }
+    
+    .cell:hover {
+        box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
+    }
+    
+    .cell .user-info .title {
+        margin-top: 8px;
+        font-weight: bold;
+        font-size: 18px;
+        color: blueviolet;
+    }
+    
+    .cell .user-info .position {
+        font-size: 14px;
+        text-align: justify;
+    }
+    
+    .cell img {
+        border-radius: 2px 2px 0 0;
+        width: 250px;
+        height: 250px;
+    }
+    
+    .first-item .list-group {
+        color: blueviolet;
+    }
+    
+    .first-item .list-group .list-group-item:hover {
+        box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
+        ;
+    }
+    
+    .jumbotron {
+        background-color: #24221e;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: auto;
+        margin-top: 15px;
+    }
+    
+    @media (max-width: 767px) {
+        .nav-side-menu {
+            position: relative;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .nav-side-menu .toggle-btn {
+            display: block;
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            z-index: 10 !important;
+            padding: 3px;
+            background-color: #ffffff;
+            color: #000;
+            width: 40px;
+            text-align: center;
+        }
+        .brand {
+            text-align: left !important;
+            font-size: 22px;
+            padding-left: 20px;
+            line-height: 50px !important;
+        }
+        .thongbao-manhinhchinh {
+            display: block;
+        }
+    }
+    
+    @media (min-width: 767px) {
+        .nav-side-menu .menu-list .menu-content {
+            display: block;
+        }
+        .gedf-main {
+            margin: 0%;
+            margin-left: 25%;
+            margin-top: 1%;
+        }
+        .material-icons-upload-images-main {
+            font-size: 36px;
+        }
+        .thongbao-manhinhchinh {
+            overflow: auto;
+            position: fixed;
+            top: 0px;
+            width: 300px;
+            height: 100%;
+            margin-left: 75%;
+            margin-top: 1%;
+        }
+        .container {
+            border-radius: 5%;
+            margin-top: 2%;
+            width: 35%;
+            height: 100%;
+        }
+    }
+    
+    body {
+        margin: 0px;
+        padding: 0px;
+    }

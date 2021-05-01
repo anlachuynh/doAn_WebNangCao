@@ -1,3 +1,4 @@
+// Cấu hình admin nếu chưa tồn tại
 const userModel = require('./models/userModel')
 
 // config admin account and other user
@@ -19,3 +20,4 @@ userModel.find({name: 'Admin', role: 'Admin'}).exec()
 .catch(err => {
     console.log(err)
 })
+
