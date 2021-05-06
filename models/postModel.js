@@ -5,8 +5,7 @@ const postchema = mongoose.Schema({
     toGroup: {type: mongoose.Schema.Types.ObjectId, ref: 'GroupUser', required: true},
     title: {type: String, required: true},
     content: {type: String, default: 'Nothing to write :)) !'},
-    image: [{type: String}],
-    video: [{type: String}],
+    mediaContent: [{type: mongoose.Schema.Types.ObjectId, ref: 'Media', required: true}],
     typePost: {type: String, default: 'text'},
     timeStamp: {type: Date, default: Date.now()},
 })

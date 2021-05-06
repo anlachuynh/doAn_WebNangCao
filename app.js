@@ -30,7 +30,7 @@ const flash = require('express-flash')
 app.use(flash())
 
 require('./db')
-
+require('./admin')
 
 // xác minh đã đăng nhập và phải có thông tin user trong session
 const isLogin = (req, res, next) => {
@@ -40,12 +40,22 @@ const isLogin = (req, res, next) => {
 
 // Dashboard
 app.get('/', isLogin, (req, res) => {
-    res.redirect('/chat')
+    res.redirect('/main')
+})
+
+app.get('/main', (req, res) => {
+    res.render('main')
+})
+
+app.get('/thongbao', (req, res) => {
+    res.render('thongbao')
+})
+
+app.get('/dangbai', (req, res) => {
+    res.render('dangbai')
 })
 
 app.use('/auth', require('./routers/OAuth'))
-
-app.use('/chat', require('./routers/chatRoute'))
 
 app.use('/user', require('./routers/userRoute'))
 

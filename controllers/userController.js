@@ -22,11 +22,11 @@ module.exports = {
         console.log(code)
         res.render('login', {code, error, email})
     },
-    login: async (req, res) => {
-        console.log('login that bai')
-        // const {email, password} = req.body
-        // res.redirect('/')
-    },
+    // login: async (req, res) => {
+    //     console.log('login that bai')
+    //     // const {email, password} = req.body
+    //     // res.redirect('/')
+    // },
     logout: (req, res) =>{
         req.logout()
         res.redirect('/')
@@ -35,28 +35,28 @@ module.exports = {
         if(req.isAuthenticated()) return res.redirect('/')
         else return next()
     },
-    index_register: (req, res) =>{
-        let error = req.flash('error') || ''
-        let code = req.flash('code') || ((error.length > 0) ? -1: 0)
-        let email = req.flash('email') || ''
-        let name = req.flash('name') || ''
-        res.render('register', {code, error, email, name})
-    },
-    register: async (req, res) => {
-        const {name, email, password} = req.body
-        await model.findOne({email: email}).exec()
-        .then(existU => {
-            if(existU == null)
-                new model({name, email, password}).save(err => {
-                    if(err) return notify(req, res, '/user/register', {code: 1, error: err._message})
-                    else return notify(req, res, '/user/login', {code: 0, error: 'Đăng ký thành công!'})
-                })
-            else return notify(req, res, '/user/register', {code: 2, error: 'Đã tồn tại email người dùng!'})
-        })
-        .catch(error => {
-            return notify(req, res, '/user/register', {code: 5, error: error.toString()})
-        })
-    },
+    // index_register: (req, res) =>{
+    //     let error = req.flash('error') || ''
+    //     let code = req.flash('code') || ((error.length > 0) ? -1: 0)
+    //     let email = req.flash('email') || ''
+    //     let name = req.flash('name') || ''
+    //     res.render('register', {code, error, email, name})
+    // },
+    // register: async (req, res) => {
+    //     const {name, email, password} = req.body
+    //     await model.findOne({email: email}).exec()
+    //     .then(existU => {
+    //         if(existU == null)
+    //             new model({name, email, password}).save(err => {
+    //                 if(err) return notify(req, res, '/user/register', {code: 1, error: err._message})
+    //                 else return notify(req, res, '/user/login', {code: 0, error: 'Đăng ký thành công!'})
+    //             })
+    //         else return notify(req, res, '/user/register', {code: 2, error: 'Đã tồn tại email người dùng!'})
+    //     })
+    //     .catch(error => {
+    //         return notify(req, res, '/user/register', {code: 5, error: error.toString()})
+    //     })
+    // },
     validator_login: [
         check('email').exists().withMessage('Vui lòng nhập Email người dùng')
         .notEmpty().withMessage('Không được để trống Email')
@@ -66,27 +66,27 @@ module.exports = {
         .notEmpty().withMessage('Không được để trống mật khẩu')
         .isLength({min: 6}).withMessage('Mật khẩu phải từ 6 ký tự')
     ],
-    validator_register: [
-        check('name').exists().withMessage('Vui lòng nhập tên người dùng')
-        .notEmpty().withMessage('Không được để trống tên người dùng'),
+    // validator_register: [
+    //     check('name').exists().withMessage('Vui lòng nhập tên người dùng')
+    //     .notEmpty().withMessage('Không được để trống tên người dùng'),
 
-        check('email').exists().withMessage('Vui lòng nhập Email người dùng')
-        .notEmpty().withMessage('Không được để trống Email')
-        .isEmail().withMessage('Email không đúng định dạng'),
+    //     check('email').exists().withMessage('Vui lòng nhập Email người dùng')
+    //     .notEmpty().withMessage('Không được để trống Email')
+    //     .isEmail().withMessage('Email không đúng định dạng'),
     
-        check('password').exists().withMessage('Vui lòng nhập mật khẩu')
-        .notEmpty().withMessage('Không được để trống mật khẩu')
-        .isLength({min: 6}).withMessage('Mật khẩu phải từ 6 ký tự'),
+    //     check('password').exists().withMessage('Vui lòng nhập mật khẩu')
+    //     .notEmpty().withMessage('Không được để trống mật khẩu')
+    //     .isLength({min: 6}).withMessage('Mật khẩu phải từ 6 ký tự'),
 
-        check('rePassword').exists().withMessage('Vui lòng nhập xác nhận mật khẩu')
-        .notEmpty().withMessage('Chưa nhập xác nhận mật khẩu')
-        .custom((value, {req}) => {
-            if (req.body.password !== value){
-                throw new Error('Mật khẩu không khớp')
-            }else
-                return true
-        }),
-    ],
+    //     check('rePassword').exists().withMessage('Vui lòng nhập xác nhận mật khẩu')
+    //     .notEmpty().withMessage('Chưa nhập xác nhận mật khẩu')
+    //     .custom((value, {req}) => {
+    //         if (req.body.password !== value){
+    //             throw new Error('Mật khẩu không khớp')
+    //         }else
+    //             return true
+    //     }),
+    // ],
     local_authenticate: passport.authenticate('local', {
         failureRedirect: '/user/login',
         successRedirect: '/',
@@ -106,18 +106,18 @@ module.exports = {
         }
         else next()
     },
-    valid_register: (req, res, next) => {
-        let result = validationResult(req)
-        if (result.errors.length > 0){
-            result = result.mapped()
-            let message;
-            for (fields in result){
-                message = result[fields].msg
-                break
-            }
-            return notify(req, res, '/user/register', {code: 3, error: message})
-        }
-        else next()
-    },
+    // valid_register: (req, res, next) => {
+    //     let result = validationResult(req)
+    //     if (result.errors.length > 0){
+    //         result = result.mapped()
+    //         let message;
+    //         for (fields in result){
+    //             message = result[fields].msg
+    //             break
+    //         }
+    //         return notify(req, res, '/user/register', {code: 3, error: message})
+    //     }
+    //     else next()
+    // },
     
 }

@@ -8,8 +8,6 @@ const userSchema = mongoose.Schema({
     password: {type: String, default: ''},
     avatar: {type: String, default: '/images/default.png'},
     role: {type: String, default: 'student'},
-    fromGroup: [{type: mongoose.Schema.Types.ObjectId, ref: 'GroupUser', required: true}],
-    category: {type: String, default: ''}
 })
 
 userSchema.path('name').set(function (value) {
