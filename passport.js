@@ -1,5 +1,6 @@
 const userModel = require('./models/userModel')
 const passport = require('passport')
+const jwt = require('jsonwebtoken')
 const localStratery = require('passport-local').Strategy
 passport.use('local', new localStratery({
     usernameField: 'email',
@@ -55,10 +56,12 @@ passport.use('google', new GoogleStrategy({
 // done(null, false, { message : 'invalid e-mail address or password' });
 
 passport.serializeUser((user, done) => {
-    done(null, user._id)
+    // tao token
+    value = jwt.sign({id: user._id},"mabimat", {expiresIn: '10m'})
+    done(null, {id: user._id, token: value})
 })
-passport.deserializeUser((id, done) => {
-    userModel.findById(id, (err, user) => done(err, user))
+passport.deserializeUser((_user, done) => {
+    userModel.findById(_user.id, (err, user) => done(err, user))
 })
 
 module.exports = passport

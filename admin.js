@@ -53,6 +53,7 @@ groupUserModel.find().exec()
         groupUserModel.insertMany(allGroup, (err, docs) => {
             if(err) throw err
             if(allGroup.length == docs.length){
+                console.log(docs)
                 console.log('Tạo mới nhóm thành công !')
             }
         })

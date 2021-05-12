@@ -2,7 +2,14 @@ const express = require('express')
 const app = express()
 app.set('view engine', 'ejs')
 
+const cors = require('cors')
+app.use(cors())
+
+const jwt = require('jsonwebtoken')
+
 require('dotenv').config()
+require('./db')
+require('./admin')
 
 const fs = require('fs')
 const path = require('path')
@@ -29,22 +36,18 @@ app.use(passport.session())
 const flash = require('express-flash')
 app.use(flash())
 
-require('./db')
-require('./admin')
-
 // xác minh đã đăng nhập và phải có thông tin user trong session
-const isLogin = (req, res, next) => {
-    if(req.isAuthenticated()) return next()
-    else return res.redirect('./user/login')
-}
+let {isLogin, checkToken} = require('./methods')
+
 
 // Dashboard
 app.get('/', isLogin, (req, res) => {
     res.redirect('/main')
 })
 
-app.get('/main', (req, res) => {
-    res.render('main')
+app.get('/main', isLogin, (req, res) => {
+    console.log(req.session.passport.user)
+    res.render('main', req.session.passport.user)
 })
 
 app.get('/thongbao', (req, res) => {
@@ -55,6 +58,8 @@ app.get('/dangbai', (req, res) => {
     res.render('dangbai')
 })
 
+app.use('/api', require('./routers/api'))
+
 app.use('/auth', require('./routers/OAuth'))
 
 app.use('/user', require('./routers/userRoute'))
@@ -62,6 +67,13 @@ app.use('/user', require('./routers/userRoute'))
 app.get('/*', (req, res)=>{
     res.render('404_error', {page: req.params[0]})
 })
+
+
+
+
+
+
+
 
 const server = require('./socket').configSocket(app)
 

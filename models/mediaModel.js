@@ -1,7 +1,8 @@
 // Đại diện các tệp đa phương tiện
 const mongoose = require('mongoose')
 const MediaSchema = mongoose.Schema({
-    content: {type: String, required: true},
+    originalname: {type: String, default: ''},
+    uri: {type: String, required: true},
     type: {type: String, required: true, default: 'image'},
     timeStamp: {type: Date, default: Date.now()},
 })
