@@ -5,7 +5,10 @@ const configSocket = (app) => {
     const server = require('http').createServer(app);
     // Gán socket vào server của ứng dụng
     const io = require('socket.io')(server);
-
+    const sendComment = (content, postID) => {
+        io.emit('comment', {post})
+    }
+    //TODO lam lai socket
     // Handle client mới (khi người dùng kết nối)
     io.on('connection', (socket) => {
         const _sessionID = socket.id
@@ -47,6 +50,7 @@ const configSocket = (app) => {
     })
     return server
 }
+
 
 module.exports = {configSocket, usersOnline}
 

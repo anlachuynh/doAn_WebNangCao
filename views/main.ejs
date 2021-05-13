@@ -179,7 +179,20 @@
             </div>
         </div>
     </div>
+    <p class="data" data-id="<%= id %>"></p>
+    <p class="data" data-token="<%= token %>"></p>
 </body>
 <script src="./js/main.js"></script>
+<script>
+    let element = document.getElementsByClassName('data')
+    let data = {}
+    for (i = 0; i < element.length; i++) {
+        data = {
+            ...data,
+            ...JSON.parse(JSON.stringify(element[i].dataset))
+        }
+    }
+    console.log(data)
+</script>
 
 </html>

@@ -37,7 +37,7 @@ const flash = require('express-flash')
 app.use(flash())
 
 // xác minh đã đăng nhập và phải có thông tin user trong session
-let {isLogin, checkToken} = require('./methods')
+let {isLogin, isLogin_json, checkToken} = require('./methods')
 
 
 // Dashboard
@@ -64,10 +64,13 @@ app.use('/auth', require('./routers/OAuth'))
 
 app.use('/user', require('./routers/userRoute'))
 
+app.get('/testapi', isLogin_json, (req, res) => {
+    res.render('testAPI', req.session.passport.user)
+})
+
 app.get('/*', (req, res)=>{
     res.render('404_error', {page: req.params[0]})
 })
-
 
 
 

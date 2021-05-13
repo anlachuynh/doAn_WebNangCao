@@ -27,6 +27,7 @@ groupUserModel.find().exec()
 .then(u => {
     if (u.length == 0){
         let allGroup = [
+            {name: 'other'},
             {name: 'Phòng Công tác học sinh sinh viên (CTHSSV)'},
             {name: 'Phòng Đại học'},
             {name: 'Phòng Sau đại học'},
@@ -48,7 +49,7 @@ groupUserModel.find().exec()
             {name: 'Khoa Môi trường và bảo hộ lao động'},
             {name: 'Khoa Lao động công đoàn'},
             {name: 'Khoa Tài chính ngân hàng'},
-            {name: 'Khoa giáo dục quốc tế.'}
+            {name: 'Khoa giáo dục quốc tế'},
         ]
         groupUserModel.insertMany(allGroup, (err, docs) => {
             if(err) throw err

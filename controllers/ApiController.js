@@ -36,7 +36,7 @@ const getImage = (req) => {
     else {
         console.log('Không tìm thấy ảnh')
         return {error: '', image: []}
-    } 
+    }
 }
 const getVideo = (video) => {
     if (Array.isArray(video) && video.length >= 0){
@@ -69,7 +69,7 @@ module.exports = {
 
             let error = e1 + e2 + e3
             if(error.length > 0) return res.json({success: false, msg: error})
-            
+
             let postItem = new Post({user: req.user, toGroup, title, content, mediaContent: [...image, ...videos]})
             return postItem.save()
             .then((doc) => {
@@ -81,7 +81,7 @@ module.exports = {
             })
             .catch(err => res.json({success: false, msg: err}))
         },
-        //TODO nên giới hạn lại trường dữ liệu vì đây chỉ là dữ liệu cho việc hiển thi item
+        
         get: async (req, res) => {
             let {page, quantity} = req.body
 
@@ -137,9 +137,14 @@ module.exports = {
             .catch(err => res.json({success: false, msg: err}))
         }
     },
+    getGroups: async (req, res) => {
+        return Group.find().exec()
+        .then(docs => res.json({success: true, docs}))
+        .catch(err => res.json({success: false, msg: err}))
+    },
     checkValid: (req, res, next) => {
         let result = validationResult(req)
         if (result.errors.length > 0) res.json({success: false, msg: result.errors.shift().msg})
         else next()
     }
-} 
+}

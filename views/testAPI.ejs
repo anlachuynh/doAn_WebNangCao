@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h3>Có vài cái tui phân vân:</h3>
+    <ol>
+        <li>bài đằng của sinh viên giống với bài thông báo của các phòng ban ??</li>
+        <li>các comment được gửi bằng cách client gửi qua socket đến server và các client khác rồi server lưu thông tin, hay gửi qua api đến server rồi server lưu thông tin và gửi lại qua socket đến các client còn lại client ??</li>
+        <li>cho phép client gửi nhiều tệp phương tiện (ảnh/ video) trong 1 bài đăng / comment hay nên giới hạn hay chỉ cho gửi 1 cái</li>
+    </ol>
+
+    <h3>Lưu ý:</h3>
+    <ol>
+        <li>tệp video chỉ là đường link youtube</li>
+        <li>tệp ảnh gửi theo formdata giống trong lab 6_7 và được gửi cùng các trường dữ liệu khác</li>
+        <li>cái phần hiển thị video nhúng mấy ông làm nha</li>
+    </ol>
+
+    <h3>Demo create post:</h3>
+    <label for="title">Tựa đề</label>
+    <input type="text" id="title"><br><br>
+    <label for="content">nội dung</label>
+    <textarea name="content" id="content" cols="30" rows="10" placeholder="nhập nội dung vào đây"></textarea><br><br>
+    <label for="video">link video:</label>
+    <!-- <input type="text" id="video"><br> -->
+    <p id="link_videos"></p>
+    <button id="add_video">Thêm link</button>
+    <br>
+    <label for="image">Thêm file:</label>
+    <input id="image" type="file" multiple><br><br>
+    <select name="group" id="group">
+    </select><br><br>
+    <button id="btn_send">Tạo bài đăng</button>
+
+
+    <!-- Nhận data từ server -->
+    <p class="data" data-id="<%= id %>"></p>
+    <p class="data" data-token="<%= token %>"></p>
+    <!-- Hiện chỉ có thông tin id và token được truyền vào -->
+</body>
+<script>
+    // Lây data
+    const getData = () => {
+        let element = document.getElementsByClassName('data')
+        let data = {}
+        for (i = 0; i < element.length; i++) {
+            data = {
+                ...data,
+                ...JSON.parse(JSON.stringify(element[i].dataset))
+            }
+        }
+        return data
+    }
+    // GỌi api lấy tất cả bài đăng
+    const getAllPost = async (token = {}) => {
+        let url = 'http://localhost:3000/api/post/get_all_posts'
+        return fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({token})
+            })
+            .then(json => json.json())
+            .then(json => {
+                if (json.success) return {error: '', data: json.docs}
+                else return {error: json.msg, data: []}
+            })
+            .catch(err => ({error: err, data: []}))
+    }
+    // lấy 1 bài đăng cụ thể, được dùng trong trường hợp nhấn vào 1 thông báo cụ thể
+    const getPost = async (token = {}, postID) => {
+        let url = `http://localhost:3000/api/post/${postID}`
+        return fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({token})
+            })
+            .then(json => json.json())
+            .then(json => {
+                if(json.success) return {error: '', data: json.doc}
+                else return {error: json.msg, data: {}}
+            })
+            .catch(err => ({error: err, data: {}}))
+    }
+    // tạo bài đăng
+    const createPost = async (token = {}, {title, content, group, video, image}) => {
+        let url = `http://localhost:3000/api/post/create`
+
+        let form =  new FormData()
+        form.set('token', token)
+        form.set('title', title)
+        form.set('content', content)
+        form.set('group', group)
+        for(i=0;i<video.length;i++)
+            form.append('video', video[i])
+        for(i=0;i<image.length;i++)
+            form.append('image', image[i])
+
+        return fetch(url, {
+                method: 'PUT',
+                // headers: {
+                //     'Content-Type': 'multipart/form-data'
+                // },
+                body: form
+            })
+            .then(json => json.json())
+            .then(json => ({error: '', data: json}))
+            .catch(err => ({error: err, data: {}}))
+    }
+    // Lấy tất cả các nhóm
+    const getGroup = async (token = {}) => {
+        let url = 'http://localhost:3000/api/getGroups'
+        return fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({token})
+            })
+            .then(json => json.json())
+            .then(json => {
+                if (json.success) return {error: '', data: json.docs}
+                else return {error: json.msg, data: []}
+            })
+            .catch(err => ({error: err, data: []}))
+    }
+    
+    window.onload = async () => {
+        let {token, id} = getData()
+        console.log(token)
+
+        let {error: errorGetGroup, data: listGroup} = await getGroup(token)
+        console.log(`Error: ${errorGetGroup}`)
+        listGroup = listGroup.map(m => ({name: m.name, id: m._id}))
+        for(i in listGroup){
+            let element = document.createElement("option")
+            if(i == 0){
+                element.setAttribute('value', listGroup[i].id)
+                element.innerHTML = 'Nếu là bài đăng bình thường thì không được chọn'
+                element.disabled = true
+                element.selected = true
+                document.getElementById('group').appendChild(element)
+                continue
+            }
+            element.setAttribute('value', listGroup[i].id)
+            element.innerHTML = listGroup[i].name
+            document.getElementById('group').appendChild(element)
+        }
+
+        let video = []
+        add_video.onclick = async (e) => {
+            let link = prompt('Vui lòng thêm đường link youtube: ')
+            if (link != null){
+                link_videos.append(link, document.createElement("br"))
+                video.push(link)
+            }
+        }
+
+        btn_send.onclick = async () => {
+            let title = document.getElementById('title').value
+            let content = document.getElementById('content').value
+            // let video = document.getElementById('video').value
+            let group = document.getElementById('group').value
+
+            let uploadFile = document.getElementById('image')
+            let image = uploadFile.files
+            let {error: errorCreate, data: res} = await createPost(token, {title, content, video, group, image})
+            console.log(`Error: ${errorCreate}`)
+            console.log(res)
+        }
+
+        let {error: errorPost, data: post} = await getAllPost(token)
+        console.log(`Error: ${errorPost}`)
+        console.log(post)
+
+
+    }
+</script>
+
+</html>
+

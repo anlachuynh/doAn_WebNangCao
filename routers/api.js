@@ -5,9 +5,9 @@ const multer = require('multer')
 const uploader = multer({dest: __dirname + '/../temp/'})
 const {validCreatePost, validGetPost, validToken, validCreateComment} = require('../controllers/validator')
 
-router.post('/post/create', isLogin_json, uploader.array('image'), validCreatePost, request.checkValid, checkToken, request.Post.create)
+router.put('/post/create', isLogin_json, uploader.array('image'), validCreatePost, request.checkValid, checkToken, request.Post.create)
 
-router.post('/comment/create', isLogin_json, uploader.array('image'), validCreateComment, request.checkValid, checkToken, request.Comment.create)
+router.put('/comment/create', isLogin_json, uploader.array('image'), validCreateComment, request.checkValid, checkToken, request.Comment.create)
 
 router.post('/post/get_posts', isLogin_json, validGetPost, request.checkValid, checkToken, request.Post.get)
 
@@ -17,6 +17,7 @@ router.post('/post/:postID', isLogin_json, validToken, request.checkValid, check
 
 router.post('/post/:postID/get_comments', isLogin_json, validToken, request.checkValid, checkToken, request.Comment.getComment)
 
+router.post('/getGroups', isLogin_json, validToken, request.checkValid, checkToken, request.getGroups)
 module.exports = router
 
 
