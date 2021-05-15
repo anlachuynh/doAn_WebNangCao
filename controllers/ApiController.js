@@ -3,6 +3,7 @@ const Comment = require('../models/commentModel')
 const Post = require('../models/postModel')
 const Group = require('../models/groupUserModel')
 const MediaContent = require('../models/mediaModel')
+const Users = require('../models/userModel')
 const socket = require('../socket')
 
 const getGroup = async (group) => {
@@ -15,7 +16,7 @@ const getGroup = async (group) => {
 }
 const getImage = (req) => {
     if (req.files != undefined && req.files.length >= 0){
-        let imageArr = req.files.map(e => ({originalname: e.originalname, uri: e.path, user: req.user._id}))
+        let imageArr = req.files.map(e => ({originalname: e.originalname, uri: e.path, type: 'image', user: req.user._id}))
         return MediaContent.insertMany(imageArr)
         .then(image =>  image)
         .catch(error => {throw error})
@@ -176,6 +177,16 @@ module.exports = {
             } catch (e) {
                 return res.json({success: false, msg: e.toString()})
             }
+        }
+    },
+    deleteUser: async (req, res) => {
+        let id = req.user._id
+        try {
+            let result = await Users.deleteOne({_id: id})
+            return res.json({success: true, result})
+        } catch (error) {
+            console.log(error.toString())
+            return res.json({success: false, msg: error.toString()})
         }
     },
     getGroups: async (req, res) => {

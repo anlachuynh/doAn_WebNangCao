@@ -8,5 +8,4 @@ router.get('/createAccount', isLogin, createAccountIndex)
 router.post('/createAccount', isLogin, validator_register, checkValid, checkToken, createAccount)
 
 
-
 module.exports = router

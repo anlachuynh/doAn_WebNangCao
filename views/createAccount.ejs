@@ -48,9 +48,17 @@
             <br>
             <br>
             <hr>
-            <div class="alert alert-success">
-                <strong>Success!</strong> This alert box could indicate a successful or positive action.
+            <% if(locals.flash.success && flash.success.length > 0){ %>
+                <% if(flash.success!=-1){ %>
+                    <div class="alert alert-success">
+                        <strong>Success!</strong>
+                <% }else{ %>
+                    <div class="alert alert-danger">
+                        <strong>Error!</strong>
+                <% } %>
+                 <%= flash.msg %>
             </div>
+            <% } %>
         </form>
 
     </div>
@@ -68,14 +76,16 @@
 <% } %>
 
 <% if(locals.flash){ %>
-    <% for(i in flash.groupID) {%>
-        <p class="data" data-groupID="<%= flash.groupID[i] %>"></p>
-    <%}%>
-
+    <p class="data" data-success="<%= flash.success %>"></p>
+    <p class="data" data-msg="<%= flash.msg %>"></p>
+    <p class="data" data-name="<%= flash.name %>"></p>
+    <p class="data" data-email="<%= flash.email %>"></p>
+    <p class="data" data-password="<%= flash.password %>"></p>
+    <p class="data" data-groupID="<%= flash.groupID %>"></p>
 <% } %>
 
 <script>
-    const doAddGroup = (listGroupData, select = 1) => {
+    const doAddGroup = (listGroupData, select = null) => {
         // moi lan select luu vao danh dach nay
         listGroup = updateGroupList(listGroupData)
         let groupSelect = document.createElement('select')
@@ -86,11 +96,11 @@
             listGroup = reloadGroupList(listGroupData)
             console.log(e.target.value)
         })
-
+        if (select == null) select == listGroup[0].id
         for(i in listGroup){
             let element = document.createElement("option")
             if(i == 0) continue
-            if(i == select){
+            if(listGroup[i].id == select){
                 element.selected = true
             }
             element.setAttribute('value', listGroup[i].id)
@@ -137,26 +147,29 @@
     }
 
     window.onload = async () => {
-        let {token, id, groupid} = getData()
-        groupid = [].concat(groupid)
+        console.log(getData())
+        let {token, id, groupid: groupIDdata} = getData()
 
         let {error: errorGetGroup, data: listGroupData} = await getGroup(token)
         console.log(`Error: ${errorGetGroup}`)
         listGroupData = listGroupData.map(m => ({name: m.name, id: m._id, leader: m.leader}))
-        listGroupData = listGroupData.filter(f => f.leader.length == 0)
+        console.log(listGroupData)
+        listGroupData = listGroupData.filter(f => f.leader == null) //TODO sua
+        console.log(listGroupData)
 
         btn_addGroup.onclick = (e) => {
             e.preventDefault()
             doAddGroup(listGroupData)
         }
-        // if (groupID == undefined)
-        //     doAddGroup(listGroupData)
-        // else{
-        //     groupID.foreach(e => {
-        //         doAddGroup(listGroupData, listGroupData.map(m => m.id).indexOf(e))
-        //     })
-        // }
-        console.log(getData())
+        let groupID = groupIDdata.split(',')
+
+        if (groupID[0] == '')
+            doAddGroup(listGroupData)
+        else{
+            groupID.forEach(e => {
+                doAddGroup(listGroupData, e)
+            })
+        }
     }
 </script>
 

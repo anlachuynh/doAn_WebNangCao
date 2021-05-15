@@ -1,6 +1,7 @@
 const {check, validationResult} = require('express-validator')
 const model = require('../models/userModel')
 const passport = require('passport')
+const Users = require('../models/userModel')
 
 const notify = (req, res, uri, {code, error} )=>{
     req.flash('code', code || '')
@@ -30,28 +31,29 @@ module.exports = {
         if(req.isAuthenticated()) return res.redirect('/')
         else return next()
     },
-    index_register: (req, res) =>{
-        let error = req.flash('error') || ''
-        let code = req.flash('code') || ((error.length > 0) ? -1: 0)
-        let email = req.flash('email') || ''
-        let name = req.flash('name') || ''
-        res.render('register', {code, error, email, name})
-    },
-    register: async (req, res) => {
-        const {name, email, password} = req.body
-        await model.findOne({email: email}).exec()
-        .then(existU => {
-            if(existU == null)
-                new model({name, email, password}).save(err => {
-                    if(err) return notify(req, res, '/user/register', {code: 1, error: err._message})
-                    else return notify(req, res, '/user/login', {code: 0, error: 'Đăng ký thành công!'})
-                })
-            else return notify(req, res, '/user/register', {code: 2, error: 'Đã tồn tại email người dùng!'})
-        })
-        .catch(error => {
-            return notify(req, res, '/user/register', {code: 5, error: error.toString()})
-        })
-    },
+
+    // index_register: (req, res) =>{
+    //     let error = req.flash('error') || ''
+    //     let code = req.flash('code') || ((error.length > 0) ? -1: 0)
+    //     let email = req.flash('email') || ''
+    //     let name = req.flash('name') || ''
+    //     res.render('register', {code, error, email, name})
+    // },
+    // register: async (req, res) => {
+    //     const {name, email, password} = req.body
+    //     await model.findOne({email: email}).exec()
+    //     .then(existU => {
+    //         if(existU == null)
+    //             new model({name, email, password}).save(err => {
+    //                 if(err) return notify(req, res, '/user/register', {code: 1, error: err._message})
+    //                 else return notify(req, res, '/user/login', {code: 0, error: 'Đăng ký thành công!'})
+    //             })
+    //         else return notify(req, res, '/user/register', {code: 2, error: 'Đã tồn tại email người dùng!'})
+    //     })
+    //     .catch(error => {
+    //         return notify(req, res, '/user/register', {code: 5, error: error.toString()})
+    //     })
+    // },
     checkValid: (req, res, next) => {
         let result = validationResult(req)
         if (result.errors.length > 0) {

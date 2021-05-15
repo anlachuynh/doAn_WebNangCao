@@ -31,6 +31,15 @@ userSchema.pre('save', function (next) {
         }
     })
 })
+const Group = require('../models/groupUserModel')
+userSchema.pre('deleteOne', async function (next, doc) {
+    let id = mongoose.Types.ObjectId(this._conditions._id)
+    return Group.updateMany({leader: id}, {leader: null}).exec()
+    .then(result => {
+        console.log('Đã trả lại vị trí leader')
+        console.log(result)
+    })
+})
 
 userSchema.methods.comparePass = function(planePassword, callback) {
     bcrypt.compare(planePassword, this.password, (err, isMatch) => {

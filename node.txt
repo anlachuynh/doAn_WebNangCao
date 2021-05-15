@@ -1,6 +1,12 @@
-sua socket
+
 chuc nang xoa mediacontent
 
-render cac trang
+
+render cac trang thông báo theo phòng ban
+render profile
+chỉnh thông tin profile
+
+load bai post và thực hiện các chức năng
+load comment và các chức năng
 
 them avatar
