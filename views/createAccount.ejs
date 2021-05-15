@@ -56,17 +56,23 @@
     </div>
 
 </body>
+<% if(locals.data){ %>
+    <p class="data" data-id="<%= data.id %>"></p>
+    <p class="data" data-token="<%= data.token %>"></p>
+    <p class="data" data-refreshToken="<%= data.refreshToken %>"></p>
+    <p class="data" data-name="<%= data.name %>"></p>
+    <p class="data" data-nickName="<%= data.nickName %>"></p>
+    <p class="data" data-avatar="<%= data.avatar %>"></p>
+    <p class="data" data-role="<%= data.role %>"></p>
+    <p class="data" data-email="<%= data.email %>"></p>
+<% } %>
 
-<p class="data" data-id="<%= data.id %>"></p>
-<p class="data" data-token="<%= data.token %>"></p>
-<p class="data" data-refreshToken="<%= data.refreshToken %>"></p>
-<p class="data" data-name="<%= data.name %>"></p>
-<p class="data" data-nickName="<%= data.nickName %>"></p>
-<p class="data" data-avatar="<%= data.avatar %>"></p>
-<p class="data" data-role="<%= data.role %>"></p>
-<p class="data" data-email="<%= data.email %>"></p>
-<p class="data" data-groupID="<%= flash.groupID %>"></p>
-<p class="data" data-groupID="<%= flash.groupID %>"></p>
+<% if(locals.flash){ %>
+    <% for(i in flash.groupID) {%>
+        <p class="data" data-groupID="<%= flash.groupID[i] %>"></p>
+    <%}%>
+
+<% } %>
 
 <script>
     const doAddGroup = (listGroupData, select = 1) => {
@@ -131,8 +137,8 @@
     }
 
     window.onload = async () => {
-        let {token, id, groupID} = getData()
-        groupID = [].concat(groupID)
+        let {token, id, groupid} = getData()
+        groupid = [].concat(groupid)
 
         let {error: errorGetGroup, data: listGroupData} = await getGroup(token)
         console.log(`Error: ${errorGetGroup}`)
@@ -150,7 +156,7 @@
         //         doAddGroup(listGroupData, listGroupData.map(m => m.id).indexOf(e))
         //     })
         // }
-        console.log(groupID)
+        console.log(getData())
     }
 </script>
 

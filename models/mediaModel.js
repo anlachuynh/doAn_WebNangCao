@@ -11,6 +11,7 @@ const fs = require('fs')
 const path = require('path')
 MediaSchema.pre('insertMany', function(next, document){
     document = document.map(doc => {
+        if(doc.type !== 'image') return next()
         let newDir = path.join(__dirname, '..', 'FileUpload', `${doc.user}`)
         if(!fs.existsSync(newDir)){
             fs.mkdirSync(newDir)

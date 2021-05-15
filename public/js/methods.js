@@ -1,6 +1,6 @@
 // Lây data
-const getData = () => {
-    let element = document.getElementsByClassName('data')
+const getData = (name = 'data') => {
+    let element = document.getElementsByClassName(name)
     let data = {}
     for (i = 0; i < element.length; i++) {
         data = {

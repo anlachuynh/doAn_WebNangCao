@@ -25,14 +25,15 @@ const getImage = (req) => {
         return []
     }
 }
+//TODO sua video
 const getVideo = (req) => {
-    let {videoList} = req.body
-    if (videoList == undefined || videoList == '') {
+    let {video} = req.body
+    if (video == undefined || `${video}` == '') {
         console.log('Không tìm thấy video')
         return []
     }
     else{
-        let videos = [].concat(videoList)
+        let videos = [].concat(video)
         let videoArr = videos.map(e => ({uri: e, type: 'video', user: req.user._id}))
         return MediaContent.insertMany(videoArr)
         .then(videos => videos)
@@ -80,7 +81,7 @@ module.exports = {
                 socket.notify('post', result)
                 return res.json({success: true, msg: 'Tạo bài đăng thành công', result})
             } catch (e) {
-                return res.json({success: false, msg: e})
+                return res.json({success: false, msg: e.toString()})
             }
         },
         update: async (req, res) => {
@@ -97,7 +98,7 @@ module.exports = {
                 if(result.nModified == 0) throw 'Nội dung chưa được cập nhật !'
                 return res.json({success: true, result})
             } catch (e) {
-                return res.json({success: false, msg: e})
+                return res.json({success: false, msg: e.toString()})
             }
         },
         delete: async (req, res) => {
@@ -109,7 +110,7 @@ module.exports = {
                 if(result.nModified == 0) throw 'Xóa thất bại !'
                 return res.json({success: true, result})
             } catch (e) {
-                return res.json({success: false, msg: e})
+                return res.json({success: false, msg: e.toString()})
             }
 
         },
@@ -118,12 +119,12 @@ module.exports = {
 
             return Post.find().sort({timeStamp: -1}).populate('user toGroup mediaContent', '-password -authID -email').skip((page-1)*quantity).limit((+quantity)).exec()
             .then(result => res.json({success: true, result}))
-            .catch(err => res.json({success: false, msg: err}))
+            .catch(err => res.json({success: false, msg: err.toString()}))
         },
         getAll: async (req, res) => {
             return Post.find().sort({timeStamp: -1}).populate('user toGroup mediaContent', '-password -authID -email').exec()
             .then(result => res.json({success: true, result}))
-            .catch(err => res.json({success: false, msg: err}))
+            .catch(err => res.json({success: false, msg: err.toString()}))
         },
         getById: async (req, res) => {
             let {postID} = req.params
@@ -133,7 +134,7 @@ module.exports = {
                 if (result == null) throw 'Bài đăng không tồn tại'
                 else return res.json({success: true, result})
             })
-            .catch(err => res.json({success: false, msg: err}))
+            .catch(err => res.json({success: false, msg: err.toString()}))
         }
     },
     Comment: {
@@ -150,7 +151,7 @@ module.exports = {
                 socket.notify('comment', result)
                 return res.json({success: true, msg: 'Đã thêm comment thành công', result})
             } catch (e) {
-                return res.json({success: false, msg: e})
+                return res.json({success: false, msg: e.toString()})
             }
         },
         delete: async (req, res) => {
@@ -161,7 +162,7 @@ module.exports = {
                 if(result.nModified == 0) throw 'Xóa thất bại !'
                 return res.json({success: true, result})
             } catch (e) {
-                return res.json({success: false, msg: e})
+                return res.json({success: false, msg: e.toString()})
             }
 
         },
@@ -173,7 +174,7 @@ module.exports = {
                 let result = await Comment.find({post}).sort({timeStamp: -1}).populate('user mediaContent', '-password -authID -email -_id')
                 return res.json({success: true, result})
             } catch (e) {
-                return res.json({success: false, msg: e})
+                return res.json({success: false, msg: e.toString()})
             }
         }
     },
