@@ -144,8 +144,12 @@
                     Hôm nay giỗ tổ nhưng đéo được nghỉ
                 </p>
             </div>
-            <div class="card-footer">
+           <div class="card-footer" id ="comment-click">
                 <a href="#" class="card-link"><i class="fa fa-comment"></i> Comment</a>
+            </div>
+            <div id="comment-form" style="display: none;">
+                <input type="text" class="form-control">
+                <button type="submit" class="btn btn-primary">Bình luận</button>
             </div>
         </div>
 
@@ -193,6 +197,18 @@
         }
     }
     console.log(data)
+</script>
+
+<script language="javascript">
+ 
+    document.getElementById("comment-click").onclick = function () {
+        document.getElementById("comment-form").style.display = 'none';
+    };
+
+    document.getElementById("comment-click").onclick = function () {
+        document.getElementById("comment-form").style.display = 'block';
+    };
+
 </script>
 
 </html>
