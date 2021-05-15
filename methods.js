@@ -1,5 +1,4 @@
-const { json } = require('express')
-const flash = require('express-flash')
+
 const jwt = require('jsonwebtoken')
 const {token: configToken, refreshToken: configRefreshToken} = require('./config')
 let tokenList = {}
@@ -42,6 +41,7 @@ module.exports = {
             jwt.verify(key, configRefreshToken.secretKey, (err, value) => {
                 if (err) return res.json({success: false, msg: err})
                 let token = jwt.sign(tokenList[key], configToken.secretKey, configToken.option)
+                req.session.passport.user.token = token
                 return res.json({success: true, token})
             })
         }

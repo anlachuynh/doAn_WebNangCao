@@ -1,4 +1,9 @@
-    .container {
+.group{
+    width: -webkit-fill-available;
+    margin-top: 10px;
+}
+
+.container {
         border: 2px solid #EFF3F7;
         background-color: #EFF3F7;
     }
@@ -23,6 +28,7 @@
     
     .btn-dangki {
         float: right;
+        width: 100%;
     }
     
     .nav-side-menu {

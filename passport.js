@@ -62,7 +62,7 @@ passport.serializeUser((user, done) => {
     done(null, {id: user._id, token, refreshToken})
 })
 passport.deserializeUser((_user, done) => {
-    userModel.findById(_user.id, (err, user) => done(err, user))
+    userModel.findById(_user.id, '-password -authID', (err, user) => done(err, user))
 })
 
 module.exports = passport

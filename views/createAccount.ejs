@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Arbutus" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet" />
+    <script src="../js/methods.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1 class="caption-login caption-login-main">Thêm tài khoản</h1>
+        <form action="" method="POST" class="form-login">
+            <input type="text" name="token" value="<%= data.token %>" style="display:none;">
+            <hr>
+            <div class="form-group">
+                <label class="caption-login" for="name">Tên đăng nhập:</label>
+                <input type="text" value="<%= flash.name %>" class="form-control chonhap" id="name" placeholder="Enter Name" name="name">
+            </div>
+            <div class="form-group">
+                <label class="caption-login" for="email">Email:</label>
+                <input type="email" value="<%= flash.email %>" class="form-control chonhap" id="email" placeholder="Enter Email" name="email">
+            </div>
+            <div class="form-group">
+                <label class="caption-login" for="password">Mật khẩu:</label>
+                <input type="password" value="<%= flash.password %>" class="form-control chonhap" placeholder="Enter Password" name="password">
+            </div>
+            <div class="form-group">
+                <label class="caption-login" for="rePassword">Xác nhận mật khẩu:</label>
+                <input type="password" class="form-control chonhap" placeholder="Confirm Password" name="rePassword">
+            </div>
+            <div id="selectGroupBox" class="form-group">
+                <label class="caption-login" for="email">Chọn phòng ban:</label>
+                <button class="btn btn-primary btn-sm" id="btn_addGroup">Thêm</button>
+
+            </div>
+            <div class="form-group">
+                <button type="submit" id="create_btn" class="btn btn-primary btn-dangki">Xác nhận</button>
+            </div>
+            <br>
+            <br>
+            <hr>
+            <div class="alert alert-success">
+                <strong>Success!</strong> This alert box could indicate a successful or positive action.
+            </div>
+        </form>
+
+    </div>
+
+</body>
+
+<p class="data" data-id="<%= data.id %>"></p>
+<p class="data" data-token="<%= data.token %>"></p>
+<p class="data" data-refreshToken="<%= data.refreshToken %>"></p>
+<p class="data" data-name="<%= data.name %>"></p>
+<p class="data" data-nickName="<%= data.nickName %>"></p>
+<p class="data" data-avatar="<%= data.avatar %>"></p>
+<p class="data" data-role="<%= data.role %>"></p>
+<p class="data" data-email="<%= data.email %>"></p>
+<p class="data" data-groupID="<%= flash.groupID %>"></p>
+<p class="data" data-groupID="<%= flash.groupID %>"></p>
+
+<script>
+    const doAddGroup = (listGroupData, select = 1) => {
+        // moi lan select luu vao danh dach nay
+        listGroup = updateGroupList(listGroupData)
+        let groupSelect = document.createElement('select')
+        groupSelect.className = 'group form-select form-select-sm'
+        groupSelect.setAttribute('aria-label', ".form-select-sm")
+        groupSelect.setAttribute('name', 'groupID')
+        groupSelect.addEventListener('change', e => {
+            listGroup = reloadGroupList(listGroupData)
+            console.log(e.target.value)
+        })
+
+        for(i in listGroup){
+            let element = document.createElement("option")
+            if(i == 0) continue
+            if(i == select){
+                element.selected = true
+            }
+            element.setAttribute('value', listGroup[i].id)
+            element.innerHTML = listGroup[i].name
+            groupSelect.appendChild(element)
+        }
+
+        selectGroupBox.appendChild(groupSelect)
+    }
+    const updateGroupList = (listGroupData) => {
+        let selectList = []
+        Array.prototype.forEach.call(document.getElementsByClassName('group'), (e) => {
+            selectList.push(e.value)
+        })
+        return listGroupData.filter(f => !selectList.includes(f.id))
+    }
+    
+    const reloadGroupList = (listGroupData) => {
+        let selectedList = []
+        Array.prototype.forEach.call(document.getElementsByClassName('group'), (e) => {
+            selectedList.push(e.value)
+        })
+        let listGroup = listGroupData.filter(f => !selectedList.includes(f.id))
+        Array.prototype.forEach.call(document.getElementsByClassName('group'), (e) => {
+            e.innerHTML = ''
+            let currentValue = selectedList.shift()
+            currentValue = listGroupData.filter(f => f.id == currentValue)[0]
+            let currentList = listGroup.concat(currentValue)
+            console.log(listGroup)
+            for(i in currentList){
+                let element = document.createElement("option")
+                if(i == 0) continue
+                if(currentList[i].id == currentValue.id){
+                    element.selected = true
+                }
+                element.setAttribute('value', currentList[i].id)
+                element.innerHTML = currentList[i].name
+                e.appendChild(element)
+            }
+        })
+
+        
+        return listGroup
+    }
+
+    window.onload = async () => {
+        let {token, id, groupID} = getData()
+        groupID = [].concat(groupID)
+
+        let {error: errorGetGroup, data: listGroupData} = await getGroup(token)
+        console.log(`Error: ${errorGetGroup}`)
+        listGroupData = listGroupData.map(m => ({name: m.name, id: m._id, leader: m.leader}))
+        listGroupData = listGroupData.filter(f => f.leader.length == 0)
+
+        btn_addGroup.onclick = (e) => {
+            e.preventDefault()
+            doAddGroup(listGroupData)
+        }
+        // if (groupID == undefined)
+        //     doAddGroup(listGroupData)
+        // else{
+        //     groupID.foreach(e => {
+        //         doAddGroup(listGroupData, listGroupData.map(m => m.id).indexOf(e))
+        //     })
+        // }
+        console.log(groupID)
+    }
+</script>
+
+</html>

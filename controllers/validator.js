@@ -1,4 +1,5 @@
 const {check, validationResult} = require('express-validator')
+const { exists } = require('../models/userModel')
 
 const validToken = check('token').exists().withMessage('Không tìm thấy token').notEmpty().withMessage('Mã token không hợp lệ')
 
@@ -35,6 +36,10 @@ module.exports = {
             }else
                 return true
         }),
+
+        check('groupID').exists().withMessage('Chưa chọn phòng ban')
+        .notEmpty().withMessage('Vui lòng chọn phòng ban'),
+
     ],
 
     validCreatePost: [

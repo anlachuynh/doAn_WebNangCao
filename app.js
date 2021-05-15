@@ -5,14 +5,9 @@ app.set('view engine', 'ejs')
 
 const cors = require('cors')
 app.use(cors())
-
-const jwt = require('jsonwebtoken')
-
 require('dotenv').config()
 require('./db')
-require('./admin')
-
-const fs = require('fs')
+require('./init')
 const path = require('path')
 app.use(express.static(path.join(__dirname, 'public')))
 
@@ -57,6 +52,8 @@ app.use('/notification', isLogin, require('./routers/notificationRoute'))
 app.get('/dangbai', (req, res) => {
     res.render('dangbai')
 })
+
+app.use('/admin', require('./routers/admin'))
 
 app.use('/api', require('./routers/api'))
 
