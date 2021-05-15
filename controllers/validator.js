@@ -5,6 +5,38 @@ const validToken = check('token').exists().withMessage('Không tìm thấy token
 module.exports = {
     validToken,
 
+    validator_login: [
+        check('email').exists().withMessage('Vui lòng nhập Email người dùng')
+        .notEmpty().withMessage('Không được để trống Email')
+        .isEmail().withMessage('Email không đúng định dạng'),
+    
+        check('password').exists().withMessage('Vui lòng nhập mật khẩu')
+        .notEmpty().withMessage('Không được để trống mật khẩu')
+        .isLength({min: 6}).withMessage('Mật khẩu phải từ 6 ký tự')
+    ],
+
+    validator_register: [
+        check('name').exists().withMessage('Vui lòng nhập tên người dùng')
+        .notEmpty().withMessage('Không được để trống tên người dùng'),
+
+        check('email').exists().withMessage('Vui lòng nhập Email người dùng')
+        .notEmpty().withMessage('Không được để trống Email')
+        .isEmail().withMessage('Email không đúng định dạng'),
+    
+        check('password').exists().withMessage('Vui lòng nhập mật khẩu')
+        .notEmpty().withMessage('Không được để trống mật khẩu')
+        .isLength({min: 6}).withMessage('Mật khẩu phải từ 6 ký tự'),
+
+        check('rePassword').exists().withMessage('Vui lòng nhập xác nhận mật khẩu')
+        .notEmpty().withMessage('Chưa nhập xác nhận mật khẩu')
+        .custom((value, {req}) => {
+            if (req.body.password !== value){
+                throw new Error('Mật khẩu không khớp')
+            }else
+                return true
+        }),
+    ],
+
     validCreatePost: [
         validToken,
         check('title').exists().withMessage('Không tìm thấy tiêu đề')

@@ -1,145 +1,185 @@
 const {check, validationResult} = require('express-validator')
 const Comment = require('../models/commentModel')
 const Post = require('../models/postModel')
-const User = require('../models/userModel')
 const Group = require('../models/groupUserModel')
 const MediaContent = require('../models/mediaModel')
-const passport = require('passport')
-const flash = require('express-flash')
-const { json } = require('express')
+const socket = require('../socket')
 
-const notify = (req, res, uri, {code, error} )=>{
-    req.flash('code', code || '')
-    req.flash('error', error || '')
-    return res.redirect(uri)
-}
-const getFlashData = (req) => {
-    let error = req.flash('error')
-    let toGroup = req.flash('toGroup')
-    return {error, toGroup}
-}
 const getGroup = async (group) => {
     return Group.findById(group).exec()
     .then(toGroup => {
-        if(toGroup == null) return {error:'Không thể tìm thấy thông tin nhóm', toGroup:[]}
-        else return {error:'', toGroup}
+        if(toGroup == null) throw 'Không thể tìm thấy thông tin nhóm'
+        else return toGroup
     })
-    .catch(error => ({error, toGroup: []}))
+    .catch(error => {throw error})
 }
 const getImage = (req) => {
     if (req.files != undefined && req.files.length >= 0){
-        let imageArr = req.files.map(e => ({originalname: e.originalname, uri: e.path}))
+        let imageArr = req.files.map(e => ({originalname: e.originalname, uri: e.path, user: req.user._id}))
         return MediaContent.insertMany(imageArr)
-        .then(image => ({error:'', image}))
-        .catch(error => ({error, image:[]}))
+        .then(image =>  image)
+        .catch(error => {throw error})
     }
     else {
         console.log('Không tìm thấy ảnh')
-        return {error: '', image: []}
+        return []
     }
 }
-const getVideo = (video) => {
-    if (Array.isArray(video) && video.length >= 0){
-        let videoArr = video.map(e => ({uri: e}))
-        return MediaContent.insertMany(videoArr)
-        .then(videos => ({error:'', videos}))
-        .catch(error => ({error, videos:[]}))
-    }
-    else {
+const getVideo = (req) => {
+    let {videoList} = req.body
+    if (videoList == undefined || videoList == '') {
         console.log('Không tìm thấy video')
-        return {error:'', videos: []}
+        return []
+    }
+    else{
+        let videos = [].concat(videoList)
+        let videoArr = videos.map(e => ({uri: e, type: 'video', user: req.user._id}))
+        return MediaContent.insertMany(videoArr)
+        .then(videos => videos)
+        .catch(error => {throw error})
     }
 }
 const getPost = async (postID) => {
     return Post.findById(postID).exec()
     .then(post => {
-        if(post == null) return {error:'Không thể tìm thấy bài đăng', post:[]}
-        else return {error:'', post}
+        if(post == null) throw 'Không thể tìm thấy bài đăng'
+        else return post
     })
-    .catch(error => ({error, post: []}))
+    .catch(error => {throw error})
+}
+const mongoose = require('mongoose')
+const getMediaContent = async (mediaIDList) => {
+    let mediaIDs = [].concat(mediaIDList)
+    if (Array.isArray(mediaIDs) && mediaIDs.length > 0){
+        let idArray = mediaIDs.map(m => mongoose.Types.ObjectId(m))
+        return MediaContent.find({'_id': {$in: idArray}}).exec()
+        .then(mcs => {
+            if(mcs == null) throw 'Nội dung đa phương tiện không tồn tại'
+            else return mcs
+        })
+        .catch(error => {throw error})
+    }
+    else {
+        console.log('Không có nội dung cũ')
+        return []
+    }
 }
 module.exports = {
     Post : {
         create: async (req, res) => {
-            let {title, content, group, video} = req.body
+            let {title, content, group} = req.body
 
-            let {error : e1, toGroup} = await getGroup(group)
-            let {error : e2, image} = await getImage(req)
-            let {error : e3, videos} = await getVideo(video)
-
-            let error = e1 + e2 + e3
-            if(error.length > 0) return res.json({success: false, msg: error})
-
-            let postItem = new Post({user: req.user, toGroup, title, content, mediaContent: [...image, ...videos]})
-            return postItem.save()
-            .then((doc) => {
-                if (doc == postItem) {
-                    console.log('Tạo bài đăng thành công')
-                    console.log(doc)
-                    return res.json({success: true, msg: 'Tạo bài đăng thành công', doc})
-                }
-            })
-            .catch(err => res.json({success: false, msg: err}))
+            try {
+                let toGroup = await getGroup(group)
+                let image = await getImage(req)
+                let videos = await getVideo(req)
+                let postItem = new Post({user: req.user, toGroup, title, content, mediaContent: [...image, ...videos]})
+                let result = await postItem.save()
+                if (result != postItem) throw 'Thêm bài đăng thất bại'
+                console.log('Tạo bài đăng thành công')
+                socket.notify('post', result)
+                return res.json({success: true, msg: 'Tạo bài đăng thành công', result})
+            } catch (e) {
+                return res.json({success: false, msg: e})
+            }
         },
-        
+        update: async (req, res) => {
+            let {title, content, group, oldMediaContent} = req.body
+            let {postID} = req.params
+            if (postID == undefined) return res.json({success: false, msg: 'Không có id'})
+            try {
+                let post = await getPost(postID)
+                let toGroup = await getGroup(group)
+                let image = await getImage(req)
+                let videos = await getVideo(req)
+                let oldContent = await getMediaContent(oldMediaContent)
+                let result = await Post.updateOne(post, {user: req.user, toGroup, title, content, mediaContent: [...image, ...videos, ...oldContent]})
+                if(result.nModified == 0) throw 'Nội dung chưa được cập nhật !'
+                return res.json({success: true, result})
+            } catch (e) {
+                return res.json({success: false, msg: e})
+            }
+        },
+        delete: async (req, res) => {
+            let {postID} = req.params
+            if (postID == undefined) return res.json({success: false, msg: 'Không có id'})
+            try {
+                let post = await getPost(postID)
+                let result = await Post.deleteOne(post)
+                if(result.nModified == 0) throw 'Xóa thất bại !'
+                return res.json({success: true, result})
+            } catch (e) {
+                return res.json({success: false, msg: e})
+            }
+
+        },
         get: async (req, res) => {
             let {page, quantity} = req.body
 
-            return Post.find().populate('user toGroup mediaContent').skip((page-1)*quantity).limit((+quantity)).exec()
-            .then(docs => res.json({success: true, docs}))
+            return Post.find().sort({timeStamp: -1}).populate('user toGroup mediaContent', '-password -authID -email').skip((page-1)*quantity).limit((+quantity)).exec()
+            .then(result => res.json({success: true, result}))
             .catch(err => res.json({success: false, msg: err}))
         },
         getAll: async (req, res) => {
-            return Post.find().populate('user toGroup mediaContent', '-password -authID -email -_id').exec()
-            .then(docs => res.json({success: true, docs}))
+            return Post.find().sort({timeStamp: -1}).populate('user toGroup mediaContent', '-password -authID -email').exec()
+            .then(result => res.json({success: true, result}))
             .catch(err => res.json({success: false, msg: err}))
         },
         getById: async (req, res) => {
             let {postID} = req.params
             if (postID == undefined) return res.json({success: false, msg: 'Không có id'})
-            else return Post.findById(postID).populate('user toGroup mediaContent', '-password -authID -email -_id').exec()
-            .then(doc => {
-                if (doc == null) return res.json({success: false, msg: 'Bài đăng không tồn tại'})
-                else return res.json({success: true, doc})
+            else return Post.findById(postID).populate('user toGroup mediaContent', '-password -authID -email').exec()
+            .then(result => {
+                if (result == null) throw 'Bài đăng không tồn tại'
+                else return res.json({success: true, result})
             })
             .catch(err => res.json({success: false, msg: err}))
         }
     },
     Comment: {
         create: async (req, res) => {
-            let {content, postID, video} = req.body
-            let {error: e1, post} = await getPost(postID)
-            let {error: e2, image} = await getImage(req)
-            let {error: e3, videos} = await getVideo(video)
+            let {content, postID} = req.body
+            try {
+                let post = await getPost(postID)
+                let image = await getImage(req)
+                let videos = await getVideo(req)
+                let commentItem = new Comment({user: req.user, post, content, mediaContent: [...image, ...videos]})
+                let result = await commentItem.save()
+                if (result != commentItem) throw 'Thêm comment thất bại'
+                console.log(`Comment: '${content}' vào bài viết '${post._id}'`)
+                socket.notify('comment', result)
+                return res.json({success: true, msg: 'Đã thêm comment thành công', result})
+            } catch (e) {
+                return res.json({success: false, msg: e})
+            }
+        },
+        delete: async (req, res) => {
+            let {commentID} = req.params
+            if (commentID == undefined) return res.json({success: false, msg: 'Không có id'})
+            try {
+                let result = await Comment.deleteOne({_id: commentID})
+                if(result.nModified == 0) throw 'Xóa thất bại !'
+                return res.json({success: true, result})
+            } catch (e) {
+                return res.json({success: false, msg: e})
+            }
 
-            let error = e1 + e2 + e3
-            if(error.length > 0) return res.json({success: false, msg: error})
-            
-            let commentItem = new Comment({user: req.user, post, content, mediaContent: [...image, ...videos]})
-            return commentItem.save()
-            .then((doc) => {
-                if (doc == commentItem) {
-                    console.log(`Comment: '${content}' vào bài viết '${post._id}'`)
-                    console.log(doc)
-                    return res.json({success: true, msg: 'Đã thêm comment thành công', doc})
-                }
-            })
-            .catch(err => res.json({success: false, msg: err}))
         },
         getComment: async (req, res) => {
             let {postID} = req.params
             if (postID == undefined) return res.json({success: false, msg: 'Không có id'})
-            let {error, post} = await getPost(postID)
-            if(error.length > 0) return res.json({success: false, msg: error})
-
-            return Comment.find({post}).populate('user mediaContent', '-password -authID -email -_id').exec()
-            .then(docs => res.json({success: true, docs}))
-            .catch(err => res.json({success: false, msg: err}))
+            try {
+                let post = await getPost(postID)
+                let result = await Comment.find({post}).sort({timeStamp: -1}).populate('user mediaContent', '-password -authID -email -_id')
+                return res.json({success: true, result})
+            } catch (e) {
+                return res.json({success: false, msg: e})
+            }
         }
     },
     getGroups: async (req, res) => {
         return Group.find().exec()
-        .then(docs => res.json({success: true, docs}))
+        .then(result => res.json({success: true, result}))
         .catch(err => res.json({success: false, msg: err}))
     },
     checkValid: (req, res, next) => {

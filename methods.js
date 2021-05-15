@@ -1,6 +1,11 @@
+const { json } = require('express')
 const flash = require('express-flash')
 const jwt = require('jsonwebtoken')
+const {token: configToken, refreshToken: configRefreshToken} = require('./config')
+let tokenList = {}
 module.exports = {
+
+    // MiddleWare
     isLogin: (req, res, next) => {
         if (req.isAuthenticated()) return next()
         else return res.redirect('/user/login')
@@ -10,8 +15,8 @@ module.exports = {
         else return res.json({success: false, msg: 'Phiên đăng nhập đã hết hạn'})
     },
     checkToken: (req, res, next) => {
-        let token = req.body.token || req.query.token
-        jwt.verify(token, "mabimat", (err, value) => {
+        let key = req.body.token || req.query.token
+        jwt.verify(key, configToken.secretKey, (err, value) => {
             if (err) {
                 return res.json({success: false, msg: err.toString()})
             }
@@ -23,4 +28,23 @@ module.exports = {
             }
         })
     },
+
+    //Method
+    createToken: (info) => {
+        let token = jwt.sign(info, configToken.secretKey, configToken.option)
+        let refreshToken = jwt.sign(info, configRefreshToken.secretKey, configRefreshToken.option)
+        tokenList[refreshToken] = info
+        return {token, refreshToken}
+    },
+    refreshToken: (req, res) => {
+        let key = req.body.token
+        if (key in tokenList){
+            jwt.verify(key, configRefreshToken.secretKey, (err, value) => {
+                if (err) return res.json({success: false, msg: err})
+                let token = jwt.sign(tokenList[key], configToken.secretKey, configToken.option)
+                return res.json({success: true, token})
+            })
+        }
+        else return res.json({success: false, msg: 'Refresh Token không có trong hệ thống'})
+    }
 }

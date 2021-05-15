@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+
 app.set('view engine', 'ejs')
 
 const cors = require('cors')
@@ -38,6 +39,7 @@ app.use(flash())
 
 // xác minh đã đăng nhập và phải có thông tin user trong session
 let {isLogin, isLogin_json, checkToken} = require('./methods')
+const { notify } = require('./socket')
 
 
 // Dashboard
@@ -46,13 +48,11 @@ app.get('/', isLogin, (req, res) => {
 })
 
 app.get('/main', isLogin, (req, res) => {
-    console.log(req.session.passport.user)
+    console.log({...req.session.passport.user, ...req.user._doc})
     res.render('main', req.session.passport.user)
 })
 
-app.get('/thongbao', (req, res) => {
-    res.render('thongbao')
-})
+app.use('/notification', isLogin, require('./routers/notificationRoute'))
 
 app.get('/dangbai', (req, res) => {
     res.render('dangbai')
@@ -72,13 +72,6 @@ app.get('/*', (req, res)=>{
     res.render('404_error', {page: req.params[0]})
 })
 
-
-
-
-
-
-
-const server = require('./socket').configSocket(app)
-
+const server = require('./socket').config(app)
 const port = process.env.PORT || 3000
 server.listen(port, () => console.log(`Application running on port: http://localhost:${port} !`))

@@ -1,23 +1,33 @@
 const router = require("express").Router()
-const request = require('../controllers/ApiController')
-const {isLogin_json, checkToken} = require('../methods')
+const {checkValid, Post, Comment, getGroups} = require('../controllers/ApiController')
+const {isLogin_json, checkToken, refreshToken} = require('../methods')
 const multer = require('multer')
 const uploader = multer({dest: __dirname + '/../temp/'})
 const {validCreatePost, validGetPost, validToken, validCreateComment} = require('../controllers/validator')
 
-router.put('/post/create', isLogin_json, uploader.array('image'), validCreatePost, request.checkValid, checkToken, request.Post.create)
+router.put('/post/create', isLogin_json, uploader.array('image'), validCreatePost, checkValid, checkToken, Post.create)
 
-router.put('/comment/create', isLogin_json, uploader.array('image'), validCreateComment, request.checkValid, checkToken, request.Comment.create)
+router.put('/post/update/:postID', isLogin_json, uploader.array('image'), validCreatePost, checkValid, checkToken, Post.update)
 
-router.post('/post/get_posts', isLogin_json, validGetPost, request.checkValid, checkToken, request.Post.get)
+router.post('/post/delete/:postID', isLogin_json, validToken, checkValid, checkToken, Post.delete)
 
-router.post('/post/get_all_posts', isLogin_json, validToken, request.checkValid, checkToken, request.Post.getAll)
+router.put('/comment/create', isLogin_json, uploader.array('image'), validCreateComment, checkValid, checkToken, Comment.create)
 
-router.post('/post/:postID', isLogin_json, validToken, request.checkValid, checkToken, request.Post.getById)
+router.post('/post/get_posts', isLogin_json, validGetPost, checkValid, checkToken, Post.get)
 
-router.post('/post/:postID/get_comments', isLogin_json, validToken, request.checkValid, checkToken, request.Comment.getComment)
+router.post('/post/get_all_posts', isLogin_json, validToken, checkValid, checkToken, Post.getAll)
 
-router.post('/getGroups', isLogin_json, validToken, request.checkValid, checkToken, request.getGroups)
+router.post('/post/:postID', isLogin_json, validToken, checkValid, checkToken, Post.getById)
+
+router.post('/post/:postID/get_comments', isLogin_json, validToken, checkValid, checkToken, Comment.getComment)
+
+router.post('/comment/delete/:commentID', isLogin_json, validToken, checkValid, checkToken, Comment.delete)
+
+router.post('/getGroups', isLogin_json, validToken, checkValid, checkToken, getGroups)
+
+router.post('/refreshToken', isLogin_json, validToken, checkValid, refreshToken)
+
+
 module.exports = router
 
 

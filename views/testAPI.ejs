@@ -37,7 +37,15 @@
     <input id="image" type="file" multiple><br><br>
     <select name="group" id="group">
     </select><br><br>
-    <button id="btn_send">Tạo bài đăng</button>
+    <button id="btn_send">Tạo bài đăng</button><br>
+
+    <label for="postID">ID bài viết:</label>
+    <input type="text" id="postID"><br>
+    <label for="oldCotent">Nội dung cũ:</label>
+    <p id="oldContent"></p>
+    <button id="add_idContent">Thêm id media content cũ</button><br>
+    <button id="btn_update">Cập nhật</button><br>
+    <button id="btn_delete">Xóa</button><br>
 
 
     <!-- Nhận data từ server -->
@@ -45,6 +53,7 @@
     <p class="data" data-token="<%= token %>"></p>
     <!-- Hiện chỉ có thông tin id và token được truyền vào -->
 </body>
+<script src="/socket.io/socket.io.js"></script>
 <script>
     // Lây data
     const getData = () => {
@@ -70,7 +79,7 @@
             })
             .then(json => json.json())
             .then(json => {
-                if (json.success) return {error: '', data: json.docs}
+                if (json.success) return {error: '', data: json.result}
                 else return {error: json.msg, data: []}
             })
             .catch(err => ({error: err, data: []}))
@@ -87,7 +96,7 @@
             })
             .then(json => json.json())
             .then(json => {
-                if(json.success) return {error: '', data: json.doc}
+                if(json.success) return {error: '', data: json.result}
                 else return {error: json.msg, data: {}}
             })
             .catch(err => ({error: err, data: {}}))
@@ -117,6 +126,48 @@
             .then(json => ({error: '', data: json}))
             .catch(err => ({error: err, data: {}}))
     }
+    
+    const updatePost = async (token = {}, {title, content, group, video, image, postID, oldContentList}) => {
+        let url = `http://localhost:3000/api/post/update/${postID}`
+
+        let form =  new FormData()
+        form.set('token', token)
+        form.set('title', title)
+        form.set('content', content)
+        form.set('group', group)
+        for(i=0;i<video.length;i++)
+            form.append('video', video[i])
+        for(i=0;i<image.length;i++)
+            form.append('image', image[i])
+        for(i=0;i<oldContentList.length;i++)
+            form.append('oldMediaContent', oldContentList[i])
+
+        return fetch(url, {
+                method: 'PUT',
+                // headers: {
+                //     'Content-Type': 'multipart/form-data'
+                // },
+                body: form
+            })
+            .then(json => json.json())
+            .then(json => ({error: '', data: json}))
+            .catch(err => ({error: err, data: {}}))
+    }
+    
+    const deletePost = async (token = {}, {postID}) => {
+        let url = `http://localhost:3000/api/post/delete/${postID}`
+
+        return fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({token})
+            })
+            .then(json => json.json())
+            .then(json => ({error: '', data: json}))
+            .catch(err => ({error: err, data: {}}))
+    }
     // Lấy tất cả các nhóm
     const getGroup = async (token = {}) => {
         let url = 'http://localhost:3000/api/getGroups'
@@ -129,7 +180,7 @@
             })
             .then(json => json.json())
             .then(json => {
-                if (json.success) return {error: '', data: json.docs}
+                if (json.success) return {error: '', data: json.result}
                 else return {error: json.msg, data: []}
             })
             .catch(err => ({error: err, data: []}))
@@ -169,7 +220,6 @@
         btn_send.onclick = async () => {
             let title = document.getElementById('title').value
             let content = document.getElementById('content').value
-            // let video = document.getElementById('video').value
             let group = document.getElementById('group').value
 
             let uploadFile = document.getElementById('image')
@@ -178,13 +228,52 @@
             console.log(`Error: ${errorCreate}`)
             console.log(res)
         }
+        /// PHAN UPDATE
+        let oldContentList = []
+        add_idContent.onclick = async (e) => {
+            let id = prompt('Vui lòng nhập id nội dung mediaContent cũ: ')
+            if (id != null){
+                oldContent.append(id, document.createElement("br"))
+                oldContentList.push(id)
+            }
+        }
+        btn_update.onclick = async () => {
+            let title = document.getElementById('title').value
+            let content = document.getElementById('content').value
+            let group = document.getElementById('group').value
+            let postID = document.getElementById('postID').value
+
+            let uploadFile = document.getElementById('image')
+            let image = uploadFile.files
+            let {error: errorUpdate, data: res} = await updatePost(token, {title, content, video, group, image, postID, oldContentList})
+            console.log(`Error: ${errorUpdate}`)
+            console.log(res)
+        }
+
+        btn_delete.onclick = async () => {
+            let postID = document.getElementById('postID').value
+            let {error: errorDelete, data: res} = await deletePost(token, {postID})
+            console.log(`Error: ${errorDelete}`)
+            console.log(res)
+        }
 
         let {error: errorPost, data: post} = await getAllPost(token)
         console.log(`Error: ${errorPost}`)
         console.log(post)
 
-
+        // Socket cho client
+        const socket = io()
+        socket.on('connect', function (){
+            socket.emit('setUser', id)
+            socket.on('post', doc => {
+                console.log(doc)
+            })
+            socket.on('comment', doc => {
+                console.log(doc)
+            })
+        })
     }
+    // Array.prototype.forEach.call(status, e => {
 </script>
 
 </html>

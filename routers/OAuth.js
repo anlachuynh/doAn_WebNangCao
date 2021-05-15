@@ -1,8 +1,8 @@
 const router = require("express").Router()
-const controller = require('../controllers/Authentication')
+const {google_authenticate, google_callback} = require('../controllers/Authentication')
 
-router.get('/google/', controller.google_authenticate)
+router.get('/google/', google_authenticate)
 
-router.get('/google/callback', controller.google_callback)
+router.get('/google/callback', google_callback)
 
 module.exports = router

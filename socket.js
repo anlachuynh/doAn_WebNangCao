@@ -1,58 +1,35 @@
 const messModel = require('./models/messageModel')
-let usersOnline = {}
 // Cấu hình socket
-const configSocket = (app) => {
-    const server = require('http').createServer(app);
-    // Gán socket vào server của ứng dụng
-    const io = require('socket.io')(server);
-    const sendComment = (content, postID) => {
-        io.emit('comment', {post})
+class ConfigSocket {
+    static http = require('http')
+    static server
+    static io
+    static usersOnline = {}
+    static config(app) {
+        this.server = this.http.createServer(app)
+        this.io = require('socket.io')(this.server)
+        this.io.on('connection', (socket) => {
+            socket.on('setUser', (_userID)=>{
+                this.usersOnline[socket.id] = _userID
+            })
+            // Nhận được thông tin ngắt kết nối, cập nhật lại danh sách người dùng online
+            socket.on('disconnect', ()=>{
+                delete this.usersOnline[socket.id]
+            })
+        })
+        return this.server
     }
-    //TODO lam lai socket
-    // Handle client mới (khi người dùng kết nối)
-    io.on('connection', (socket) => {
-        const _sessionID = socket.id
-        let userID
-        socket.on('setUser', (_userID)=>{
-            // Lưu thông tin người dùng đang online
-            userID = _userID
-            usersOnline[userID] = _sessionID
-
-            // Cập nhật trạng thái online cho người dùng khác
-            io.emit('updateStatus', usersOnline)
-            console.log(`người dùng: ${userID} online`)
-        })
-        // Nhận tin nhắn
-        socket.on('sendMess', function({mess, otherID}){
-
-            // Tạo thời gian
-            let time_mess = new Date(Date.now())
-
-            // Lưu nội dung tin nhắn vào database
-            new messModel({fromID: userID, toID: otherID, content: mess, timeStamp: time_mess}).save()
-            console.log('gui tin nhan den id: '+ otherID)
-
-            // Chuyển tiếp tin nhắn cho người dùng kia
-            if (usersOnline[otherID]){
-                io.to(usersOnline[otherID]).emit('newMess', {mess, time_mess: time_mess.toLocaleTimeString()})
-            }
-            else{
-                console.log(`nguoi dung ${otherID} offline`)
-            }
-        })
-        // Nhận được thông tin ngắt kết nối, cập nhật lại danh sách người dùng online
-        socket.on('disconnect', ()=>{
-            console.log('got disconnect')
-            delete usersOnline[userID]
-            io.emit('updateStatus', usersOnline)
-        })
-        
-    })
-    return server
+    static notify(type, data){
+        try {
+            this.io.emit(type, data)
+        } catch (e) {
+            console.log(e)
+        }
+    }
 }
 
+module.exports = ConfigSocket
 
-module.exports = {configSocket, usersOnline}
 
 // socket cung cấp 2 methods chính là .on và .emit, trong đó:
 // .on('event', callback): để lắng nghe sự kiện 'event' và trả về callback

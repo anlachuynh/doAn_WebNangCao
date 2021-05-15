@@ -1,2 +1,7 @@
-cài passport google
-cài các api cho comment, notification
+sua socket
+chuc nang xoa mediacontent
+
+render cac trang
+git add .
+git commit -m "them xoa sua"
+git push origin main

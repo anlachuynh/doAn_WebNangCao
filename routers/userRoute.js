@@ -1,14 +1,16 @@
 const router = require("express").Router()
-const controller = require('../controllers/userController')
+const {index, isLogin, flashData, checkValid, logout, index_register, register} = require('../controllers/UserController')
+const {local_authenticate} = require('../controllers/Authentication')
+const {validator_login, validator_register} = require('../controllers/validator')
 
-router.get('/login', controller.isLogin, controller.index)
+router.get('/login', isLogin, index)
 
-router.post('/login', controller.flashData, controller.validator_login, controller.valid_login, controller.local_authenticate)
+router.post('/login', flashData, validator_login, checkValid, local_authenticate)
 
-router.get('/logout', controller.logout)
+router.get('/logout', logout)
 
-// router.get('/register', controller.isLogin, controller.index_register)
+// router.get('/register', isLogin, index_register)
 
-// router.post('/register', controller.flashData, controller.validator_register, controller.valid_register, controller.register)
+// router.post('/register', flashData, validator_register, checkValid, register)
 
 module.exports = router

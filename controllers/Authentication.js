@@ -9,5 +9,11 @@ module.exports = {
     }),
     google_authenticate: passport.authenticate('google', {
         scope: ['profile', 'email']
-    })
+    }),
+    local_authenticate: passport.authenticate('local', {
+        failureRedirect: '/user/login',
+        successRedirect: '/',
+        failureFlash: true,
+        // failureMessage: true
+    }),
 }

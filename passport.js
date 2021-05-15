@@ -1,6 +1,6 @@
 const userModel = require('./models/userModel')
 const passport = require('passport')
-const jwt = require('jsonwebtoken')
+const {createToken} = require('./methods')
 const localStratery = require('passport-local').Strategy
 passport.use('local', new localStratery({
     usernameField: 'email',
@@ -27,6 +27,7 @@ passport.use('local', new localStratery({
 
 const keys = require('./.git/key')
 const GoogleStrategy = require('passport-google-oauth20').Strategy
+const { refreshToken } = require('./config')
 passport.use('google', new GoogleStrategy({
     clientID: keys.googleClientID,
     clientSecret: keys.googleClientSecret,
@@ -57,8 +58,8 @@ passport.use('google', new GoogleStrategy({
 
 passport.serializeUser((user, done) => {
     // tao token
-    value = jwt.sign({id: user._id},"mabimat", {expiresIn: '10m'})
-    done(null, {id: user._id, token: value})
+    let {token, refreshToken} = createToken({id: user._id})
+    done(null, {id: user._id, token, refreshToken})
 })
 passport.deserializeUser((_user, done) => {
     userModel.findById(_user.id, (err, user) => done(err, user))
